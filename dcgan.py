@@ -22,23 +22,21 @@ def generator_model():
     model.add(Activation('tanh'))
     model.add(Reshape((128, 7, 7), input_shape=(128*7*7,)))
     model.add(UpSampling2D(size=(2, 2)))
-    model.add(Convolution2D(64, 5, 5, border_mode='same'))
+    model.add(Conv2D(64, 5, 5, padding='same'))
     model.add(Activation('tanh'))
     model.add(UpSampling2D(size=(2, 2)))
-    model.add(Convolution2D(1, 5, 5, border_mode='same'))
+    model.add(Conv2D(1, 5, 5, padding='same'))
     model.add(Activation('tanh'))
     return model
 
 
 def discriminator_model():
     model = Sequential()
-    model.add(Convolution2D(
-                        64, 5, 5,
-                        border_mode='same',
-                        input_shape=(1, 28, 28)))
+    model.add(Conv2D(64, 5, 5, padding='same',\
+                      input_shape=(1, 28, 28)))
     model.add(Activation('tanh'))
     model.add(AveragePooling2D(pool_size=(2, 2)))
-    model.add(Convolution2D(128, 5, 5))
+    model.add(Conv2D(128, 5, 5))
     model.add(Activation('tanh'))
     model.add(AveragePooling2D(pool_size=(2, 2)))
     model.add(Flatten())
@@ -105,7 +103,7 @@ def train(BATCH_SIZE):
                                     for i in range(BatchSize)])
                 GeneratedImages =  np.asarray(generator.predict(noise_batch,\
                  verbose=1))
-                if offset%50==0 and Epoch%10==0:
+                if offset%50==0 and Epoch%5==0:
                     SpriteImg =  combine_images(GeneratedImages)
                     Image.fromarray(SpriteImg, mode='RGB').save( \
                     "TrainingImages/Epoch_"+str(Epoch)+"_"+\
